@@ -9,14 +9,15 @@ turtle.colormode(255)
 turtle.tracer(0)
 turtle.hideturtle()
 RUNNING=True
-timer=600
-SLEEP=0.0077
+timer=5000
+SLEEP=0.0065
 SCREEN_WIDTH = turtle.getcanvas().winfo_width()/2
 SCREEN_WIDTH_MINUS=-turtle.getcanvas().winfo_width()/2
 SCREEN_HEIGHT = turtle.getcanvas().winfo_height()/2
 SCREEN_HEIGHT_MINUS = -turtle.getcanvas().winfo_height()/2
 
 MY_BALL=Ball(100,100,2,1,40,"blue")
+evil_ball=Ball(150,50,3,4,10,"black")
 original_radius=MY_BALL.radius
 NUMBER_OF_BALLS=5
 MINIMUM_BALL_RADIUS =10
@@ -67,6 +68,7 @@ for i in range(NUMBER_OF_BALLS):
 def move_all_balls():
 	for i in BALLS:
 		i.move(SCREEN_WIDTH,SCREEN_HEIGHT)
+	evil_ball.move(SCREEN_WIDTH,SCREEN_HEIGHT)
 
 def collide(ball_a,ball_b):
 	if ball_a==ball_b:
@@ -140,6 +142,7 @@ def check_myball_collision():
 					i.color(color)
 					MY_BALL.radius=MY_BALL.radius+1
 					MY_BALL.shapesize(MY_BALL.radius/10)
+					print("i ate")
 					return True
 			if MY_BALL.radius<i.radius:
 				x_coordinate=random.randint(FIRST,SECOND)
@@ -178,8 +181,21 @@ def printTime():
     turtle.clear()
     turtle.write(timer,font=("Courier",15,"normal"))
     timer=timer-1
+
+def evil_ball_balls():
+	for i in BALLS:
+		if collide(i,evil_ball)==True:
+			i.radius-=1
+			i.shapesize(radius/10)
+
+def evil_ball_balls_myball():
+	if collide(MY_BALL,evil_ball)==True:
+		MY_BALL.radius-=0.5
+		MY_BALL.shapesize(MY_BALL.radius/10)
+
+
+
 while RUNNING==True and timer>-1:
-	print("start here")
 	global life_counter
 	if SCREEN_WIDTH != int(turtle.getcanvas().winfo_width()/2) or SCREEN_HEIGHT!= int(turtle.getcanvas().winfo_height()/2):
 		SCREEN_WIDTH = turtle.getcanvas().winfo_width()/2 
@@ -203,6 +219,8 @@ while RUNNING==True and timer>-1:
 			print("1")
 			life3.hideturtle()
 			RUNNING=False
+	evil_ball_balls_myball()
+	evil_ball_balls()
 	getscreen().update()
 	time.sleep(SLEEP)
 	printTime()
